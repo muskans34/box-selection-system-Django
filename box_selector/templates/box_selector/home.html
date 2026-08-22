@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Box Selection System</title>
+</head>
+
+<body>
+
+    <h1>Box Selection System</h1>
+
+    <p>Select an order to find the most suitable shipping box.</p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label for="order_id">Select Order:</label>
+
+        <select name="order_id" id="order_id">
+
+            {% for order in orders %}
+                <option value="{{ order.id }}">
+                    Order #{{ order.id }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+        <button type="submit">
+            Recommend Box
+        </button>
+
+    </form>
+
+
+    {% if selected_order %}
+
+        <h2>Order #{{ selected_order.id }}</h2>
+
+        <h3>Products</h3>
+
+        <ul>
+
+            {% for item in selected_order.orderitem_set.all %}
+
+                <li>
+                    {{ item.product.name }} × {{ item.quantity }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    {% endif %}
+
+
+    {% if recommended_box %}
+
+        <h2>Recommended Box</h2>
+
+        <p>
+            <strong>{{ recommended_box.name }}</strong>
+        </p>
+
+        <p>
+            Dimensions:
+            {{ recommended_box.length }} ×
+            {{ recommended_box.width }} ×
+            {{ recommended_box.height }}
+        </p>
+
+        <p>
+            Maximum Weight:
+            {{ recommended_box.max_weight }}
+        </p>
+
+        <p>
+            Cost:
+            ₹{{ recommended_box.cost }}
+        </p>
+
+    {% endif %}
+
+
+    {% if no_box %}
+
+        <h2>No Suitable Box Found</h2>
+
+        <p>
+            No available box can accommodate this order.
+        </p>
+
+    {% endif %}
+
+</body>
+</html>
